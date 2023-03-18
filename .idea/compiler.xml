@@ -13,6 +13,7 @@
         <module name="store" />
         <module name="config" />
         <module name="cart" />
+        <module name="gateway" />
         <module name="order" />
       </profile>
       <profile name="Annotation profile for account" enabled="true">
@@ -33,6 +34,7 @@
       <module name="cart" target="17" />
       <module name="config" target="17" />
       <module name="eureka" target="17" />
+      <module name="gateway" target="17" />
       <module name="order" target="17" />
       <module name="payment" target="17" />
       <module name="product" target="17" />
@@ -45,6 +47,7 @@
       <module name="cart" options="-parameters" />
       <module name="config" options="-parameters" />
       <module name="eureka" options="-parameters" />
+      <module name="gateway" options="-parameters" />
       <module name="order" options="-parameters" />
       <module name="payment" options="-parameters" />
       <module name="product" options="-parameters" />
