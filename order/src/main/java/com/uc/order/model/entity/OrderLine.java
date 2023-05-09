@@ -1,6 +1,6 @@
 package com.uc.order.model.entity;
 
-import com.uc.model.base.BaseId;
+import com.uc.order.model.entity.base.BaseId;
 import lombok.Data;
 import lombok.ToString;
 
