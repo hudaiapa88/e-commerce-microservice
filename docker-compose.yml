@@ -1,0 +1,98 @@
+version: '3'
+services:
+  keycloak-mysql:
+    container_name: keycloak-database
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: k3yM4sql
+      MYSQL_DATABASE: keycloak
+      MYSQL_USER: keyloack
+      MYSQL_PASSWORD: k3yM4sql
+    networks:
+      - ecommerce-network
+  keycloak:
+    container_name: keycloak-server
+    image: quay.io/keycloak/keycloak:21.1.1
+    ports:
+      - "8080:8080"
+    environment:
+      DB_VENDOR: MYSQL
+      DB_ADDR: keycloak-mysql
+      DB_DATABASE: keycloak
+      DB_USER: keyloack
+      DB_PASSWORD: k3yM4sql
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: 4dm1n
+    command: "start-dev --import-realm"
+    volumes:
+      - "./data/keycloak-server-data:/opt/keycloak/data/import"
+    depends_on:
+      - keycloak-mysql
+    networks:
+      - ecommerce-network
+  mongo:
+    container_name: mongodb-server
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: m0ng04dm1n
+    volumes:
+      - "./data/mongodb-server-data:/data/db"
+    networks:
+      - ecommerce-network
+  mongo-express:
+    container_name: mongo-server-express
+    image: mongo-express
+    ports:
+      - "7000:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: m0ng04dm1n
+      ME_CONFIG_MONGODB_URL: mongodb://admin:m0ng04dm1n@mongo:27017/
+    networks:
+      - ecommerce-network
+  mysql:
+    image: mysql
+    container_name: mysql-server
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: m4sql4dm1n
+    volumes:
+      - "./data/mysql-server-data:/var/lib/mysql"
+    networks:
+      - ecommerce-network
+
+  # API GATEWAY PROJECTS
+  eureka-server:
+    image: znitch23/discovery-server:latest
+    container_name: discovery-server
+    pull_policy: always
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - zipkin
+    networks:
+      - ecommerce-network
+  api-gateway:
+    image: znitch23/api-gateway:latest
+    container_name: api-gateway
+    pull_policy: always
+    ports:
+      - "8181:8181"
+    expose:
+      - "8181"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: TRACE
+    depends_on:
+      - eureka-server
+      - keycloak
+    networks:
+      - ecommerce-network
+networks:
+  ecommerce-network:

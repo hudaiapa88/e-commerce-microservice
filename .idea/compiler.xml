@@ -15,8 +15,9 @@
         <module name="cart" />
         <module name="gateway" />
         <module name="order" />
+        <module name="customer" />
       </profile>
-      <profile name="Annotation profile for account" enabled="true">
+      <profile name="Annotation profile for e-commerce" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -35,6 +36,8 @@
       <module name="address" target="17" />
       <module name="cart" target="17" />
       <module name="config" target="17" />
+      <module name="customer" target="17" />
+      <module name="e-commerce-microservice" target="1.5" />
       <module name="eureka" target="17" />
       <module name="gateway" target="17" />
       <module name="order" target="17" />
@@ -49,6 +52,7 @@
       <module name="address" options="-parameters" />
       <module name="cart" options="-parameters" />
       <module name="config" options="-parameters" />
+      <module name="customer" options="-parameters" />
       <module name="eureka" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="order" options="-parameters" />

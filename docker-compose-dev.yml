@@ -1,0 +1,57 @@
+version: '3'
+services:
+  keycloak-mysql:
+    container_name: keycloak-database
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: keycloak
+      MYSQL_USER: keyloack
+      MYSQL_PASSWORD: 123456
+    networks:
+      - ecommerce-network
+  keycloak:
+    container_name: keycloak-server
+    image: quay.io/keycloak/keycloak:21.1.1
+    ports:
+      - "8080:8080"
+    environment:
+      DB_VENDOR: MYSQL
+      DB_ADDR: keycloak-mysql
+      DB_DATABASE: keycloak
+      DB_USER: keyloack
+      DB_PASSWORD: 123456
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: 123456
+    command: "start-dev --import-realm"
+    volumes:
+      - "./data/keycloak-server-data:/opt/keycloak/data/import"
+    depends_on:
+      - keycloak-mysql
+    networks:
+      - ecommerce-network
+  mongo:
+    container_name: mongodb-server
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+    volumes:
+      - "./data/mongodb-server-data:/data/db"
+    networks:
+      - ecommerce-network
+  mongo-express:
+    container_name: mongo-server-express
+    image: mongo-express
+    ports:
+      - "7000:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: 123456
+      ME_CONFIG_MONGODB_URL: mongodb://admin:123456@mongo:27017/
+    networks:
+      - ecommerce-network
+networks:
+  ecommerce-network:

@@ -1,19 +1,19 @@
 spring:
   application:
     name: gateway-service
-  main:
-    web-application-type: none
   cloud:
+    compatibility-verifier:
+      enabled: false
     gateway:
       routes:
         - id: account-service
           uri: lb://account-service
           predicates:
-          - Path=/api/v1/account/**
+          - Path=/account/**
         - id: address-service
           uri: lb://address-service
           predicates:
-          - Path=/api/v1/address/**
+          - Path=/address/**
         - id: openapi
           uri: http://localhost:${server.port}
           predicates:
@@ -24,9 +24,15 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
-        discovery:
-          enabled: true
+  output:
+    ansi:
+      enabled: always
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/ecommerce
 eureka:
   client:
     service-url:
@@ -43,14 +49,21 @@ management:
       exposure:
         include: "*"
         exclude: info
-
+  tracing:
+    sampling:
+      probability: 1.0
 springdoc:
   swagger-ui:
-    use-root-path: true
     urls:
       - name: address
         url: /v3/api-docs/address
       - name: account
         url: /v3/api-docs/account
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%X{traceId:-},%X{spanId:-}] ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+
+
 
 
